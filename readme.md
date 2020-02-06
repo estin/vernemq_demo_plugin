@@ -1,30 +1,29 @@
 # VerneMQ Demo Plugin
 
-This plugin demonstrates how you can develop an Authentication/Authorization plugin for VerneMQ. The important files are:
+| WARNING: This is a ugly approach to pass api key from environment variable |
+| --- |
 
-- src/vernemq_demo_plugin.erl 
-- src/vernemq_demo_plugin.app.src
+This plugin demonstrates how to use plugin system to set up admin api key from environment variable. 
 
-The rest is the Erlang OTP application boilerplate.
+Compile plugin
+```bash
+rebar3 compile
+```
 
+Configure environment variables in [docker-compose.yaml]
+```bash
+docker-compose up
+```
 
-You must have a recent version of Erlang installed (it's recommended to use the
-same one VerneMQ is compiled for, typically > 17). To compile do:
+In output you will see
+```bash
+...
+vernemq_1  | 17:41:17.706 [info] api keys before: []
+vernemq_1  | 17:41:17.707 [info] api keys after: [<<"myapikey">>]
+```
 
-    ./rebar3 compile
-
-Then enable the plugin using:
-
-    vmq-admin plugin enable --name vernemq_demo_plugin --path <PathToYourPlugin>/vernemq_demo_plugin/_build/default
-
-Depending on how VerneMQ is started you might need ``sudo`` rights to access ``vmq-admin``.
-Moreover the ``<PathToYourPlugin>`` should be accessible by VerneMQ (file permissions).
-
-Since this demo plugin implements hooks which are already covered by
-``vmq_passwd`` and ``vmq_acl`` you might want to disable these in order to see
-the effect of this plugin.
-
-    vmq-admin plugin disable --name vmq_passwd
-    vmq-admin plugin disable --name vmq_acl
-
-That's it!
+Check api key
+```bash
+$ curl "http://myapikey@localhost:8888/api/v1/cluster/show"
+{"table":[{"Node":"VerneMQ@172.25.0.2","Running":true}],"type":"table"}
+```

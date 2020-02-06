@@ -1,0 +1,18 @@
+version: '3.4'
+services:
+  vernemq: 
+    image: erlio/docker-vernemq
+    environment: 
+      - DOCKER_VERNEMQ_LOG__CONSOLE=both
+      - DOCKER_VERNEMQ_ALLOW_ANONYMOUS=off
+      - DOCKER_VERNEMQ_PLUGINS__VMQ_PASSWD=off
+      - DOCKER_VERNEMQ_PLUGINS__VMQ_ACL=off
+      - DOCKER_VERNEMQ_PLUGINS__VERNEMQ_DEMO_PLUGIN=on
+      - DOCKER_VERNEMQ_PLUGINS__VERNEMQ_DEMO_PLUGIN__PATH=/opt/plugin/default
+      - API_KEY=myapikey
+    volumes:
+      - ./_build:/opt/plugin
+    ports:
+      - "1883:1883"
+      - "8883:8883"
+      - "8888:8888"
